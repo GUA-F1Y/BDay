@@ -53,6 +53,18 @@ export default function App() {
     saveState(persisted);
   }, [persisted]);
 
+  // Preload all birthday images in background immediately on mount
+  useEffect(() => {
+    const imagesToPreload = [
+      ...birthdayContent.memories.images,
+      birthdayContent.final.image,
+    ];
+    imagesToPreload.forEach(src => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, []);
+
   const handleEnter = useCallback(() => {
     setPersisted(p => ({ ...p, introOpened: true }));
     setScreen('home');

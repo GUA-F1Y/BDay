@@ -218,6 +218,7 @@ export const MemoryCarousel = ({ onBack }: MemoryCarouselProps) => {
                 }}
               >
                 <SafeImage
+                  key={memories.images[current]}
                   src={memories.images[current]}
                   alt={`Memory ${current + 1}`}
                   className=""

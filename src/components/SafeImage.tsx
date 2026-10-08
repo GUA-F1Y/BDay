@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import type { CSSProperties } from 'react';
 
 interface SafeImageProps {
@@ -10,11 +10,31 @@ interface SafeImageProps {
 
 /**
  * SafeImage – renders a local image or a beautiful placeholder if the file
- * is missing or fails to load. Never shows a broken-image icon.
+ * is missing or fails to load. Instantly displays if image is already cached.
  */
 export const SafeImage = ({ src, alt, className = '', style }: SafeImageProps) => {
-  const [status, setStatus] = useState<'loading' | 'loaded' | 'error'>('loading');
+  const [status, setStatus] = useState<'loading' | 'loaded' | 'error'>(() => {
+    if (typeof window !== 'undefined' && src) {
+      const img = new Image();
+      img.src = src;
+      if (img.complete && img.naturalWidth > 0) return 'loaded';
+    }
+    return 'loading';
+  });
   const imgRef = useRef<HTMLImageElement>(null);
+
+  useEffect(() => {
+    if (!src) return;
+    const testImg = new Image();
+    testImg.src = src;
+    if (testImg.complete && testImg.naturalWidth > 0) {
+      setStatus('loaded');
+      return;
+    }
+    setStatus('loading');
+    testImg.onload = () => setStatus('loaded');
+    testImg.onerror = () => setStatus('error');
+  }, [src]);
 
   const handleLoad = () => setStatus('loaded');
   const handleError = () => setStatus('error');
@@ -24,12 +44,15 @@ export const SafeImage = ({ src, alt, className = '', style }: SafeImageProps) =
       className={`relative overflow-hidden ${className}`}
       style={style}
     >
-      {/* Actual image – hidden until loaded */}
+      {/* Actual image */}
       {status !== 'error' && (
         <img
+          key={src}
           ref={imgRef}
           src={src}
           alt={alt}
+          loading="eager"
+          decoding="async"
           onLoad={handleLoad}
           onError={handleError}
           style={{
@@ -39,7 +62,7 @@ export const SafeImage = ({ src, alt, className = '', style }: SafeImageProps) =
             height: '100%',
             objectFit: 'cover',
             opacity: status === 'loaded' ? 1 : 0,
-            transition: 'opacity 0.5s ease',
+            transition: 'opacity 0.2s ease',
           }}
         />
       )}
@@ -65,7 +88,6 @@ export const SafeImage = ({ src, alt, className = '', style }: SafeImageProps) =
             backgroundImage: `radial-gradient(circle at 20% 50%, rgba(200,185,165,0.3) 0%, transparent 50%),
                               radial-gradient(circle at 80% 20%, rgba(180,165,145,0.2) 0%, transparent 40%)`,
           }} />
-          {/* Decorative element */}
           <div style={{
             width: 48,
             height: 48,
