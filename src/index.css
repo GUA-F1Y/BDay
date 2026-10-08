@@ -1,0 +1,699 @@
+/* ── Google Fonts ─────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap');
+
+@import "tailwindcss";
+
+/* ── Design Tokens ────────────────────────────────────── */
+:root {
+  /* Palette */
+  --ivory:         #f9f6f1;
+  --ivory-dark:    #ede5da;
+  --cream:         #fbf8f4;
+  --charcoal:      #262320;
+  --charcoal-soft: #3b3531;
+  --taupe:         #85786d;
+  --taupe-light:   #b8ada2;
+  --rose:          #be7568;
+  --rose-muted:    #cf8d81;
+  --rose-pale:     #faece8;
+  --gold-warm:     #caa76c;
+  --gold-light:    #f5ecd7;
+
+  /* Typography */
+  --font-serif:   'Playfair Display', Georgia, serif;
+  --font-sans:    'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+
+  /* Glassmorphism & Elevation */
+  --glass-bg:       rgba(255, 255, 255, 0.72);
+  --glass-bg-hover: rgba(255, 255, 255, 0.88);
+  --glass-border:   rgba(255, 255, 255, 0.85);
+  --glass-shadow:   0 12px 36px -10px rgba(50, 35, 25, 0.08), 0 2px 6px rgba(50, 35, 25, 0.03);
+
+  /* Spacing rhythm */
+  --space-xs:  0.5rem;
+  --space-sm:  1rem;
+  --space-md:  1.5rem;
+  --space-lg:  2.5rem;
+  --space-xl:  4rem;
+
+  /* Motion */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring:   cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ── Reset & Base ─────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  height: 100%;
+  overscroll-behavior: none;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  background-color: var(--ivory-dark);
+  color: var(--charcoal);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+#root {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Utility classes ─────────────────────────────────── */
+.font-serif    { font-family: var(--font-serif); }
+.font-sans     { font-family: var(--font-sans); }
+.font-display  { font-family: var(--font-display); }
+
+.text-charcoal     { color: var(--charcoal); }
+.text-taupe        { color: var(--taupe); }
+.text-taupe-light  { color: var(--taupe-light); }
+.text-rose         { color: var(--rose); }
+
+.bg-cream   { background-color: var(--cream); }
+.bg-ivory   { background-color: var(--ivory); }
+
+/* ── Screen wrapper ─────────────────────────────────── */
+.screen {
+  min-height: 100dvh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--cream);
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── Desktop centering shell ───────────────────────── */
+.app-shell {
+  min-height: 100dvh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: 
+    radial-gradient(ellipse at 15% 20%, rgba(226, 175, 163, 0.35) 0%, transparent 45%),
+    radial-gradient(ellipse at 85% 85%, rgba(202, 167, 108, 0.28) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(249, 246, 241, 0.5) 0%, transparent 80%),
+    linear-gradient(135deg, #eee7dd 0%, #e2d7c7 100%);
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Soft animated desktop ambient background glow */
+.app-shell::before {
+  content: '';
+  position: fixed;
+  inset: -100px;
+  background: radial-gradient(circle at 70% 20%, rgba(255, 235, 220, 0.5) 0%, transparent 50%),
+              radial-gradient(circle at 30% 75%, rgba(250, 220, 210, 0.4) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+  animation: ambient-float 16s ease-in-out infinite alternate;
+}
+
+@keyframes ambient-float {
+  0% { transform: translateY(0) scale(1); }
+  100% { transform: translateY(-30px) scale(1.05); }
+}
+
+.app-frame {
+  width: 100%;
+  max-width: 460px;
+  min-height: 100dvh;
+  background-color: var(--cream);
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  box-shadow: 0 0 60px rgba(44, 41, 38, 0.08);
+}
+
+@media (min-width: 520px) {
+  .app-shell {
+    padding: 2.5rem 1rem;
+  }
+  .app-frame {
+    min-height: 780px;
+    height: 844px;
+    max-height: calc(100dvh - 3rem);
+    border-radius: 40px;
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    box-shadow: 
+      0 30px 80px -20px rgba(50, 35, 25, 0.2),
+      0 0 0 1px rgba(225, 215, 205, 0.6),
+      inset 0 1px 1px rgba(255, 255, 255, 0.9);
+  }
+  .app-frame .screen {
+    min-height: 100%;
+    height: 100%;
+  }
+}
+
+/* ── Candle Styles ──────────────────────────────────── */
+/* ── Luxury Birthday Candle ───────────────────────── */
+.candle-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  outline: none;
+  background: none;
+  border: none;
+  padding: 10px 14px;
+}
+
+.candle-body {
+  width: 20px;
+  height: 76px;
+  border-radius: 10px 10px 6px 6px;
+  position: relative;
+  overflow: hidden;
+  transition: opacity 0.8s ease, filter 0.8s ease, box-shadow 0.8s ease;
+}
+
+.candle-body--lit {
+  background: linear-gradient(135deg, #f7efe6 0%, #ecd9c7 40%, #dec1a8 100%);
+  box-shadow: 0 2px 14px rgba(220, 160, 90, 0.4), inset -2px 0 4px rgba(180, 130, 90, 0.2);
+}
+
+.candle-body--out {
+  background: linear-gradient(135deg, #d8cec4 0%, #c2b5a6 50%, #ab9d8e 100%);
+  box-shadow: none;
+  opacity: 0.65;
+}
+
+/* Gold spiral stripe on candle body */
+.candle-body::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 7px,
+    rgba(212, 175, 55, 0.38) 7px,
+    rgba(212, 175, 55, 0.38) 10px
+  );
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+/* Candle top rim and wax drip */
+.candle-body::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 22px;
+  height: 9px;
+  background: radial-gradient(ellipse at 50% 30%, rgba(255, 255, 255, 0.8) 0%, rgba(240, 220, 200, 0.5) 70%, transparent 100%);
+  border-radius: 50%;
+}
+
+/* Brass holder ring at candle base */
+.candle-base-holder {
+  width: 24px;
+  height: 6px;
+  background: linear-gradient(90deg, #b89150 0%, #ffd984 50%, #9e7535 100%);
+  border-radius: 3px;
+  margin-top: -3px;
+  box-shadow: 0 1px 3px rgba(60, 45, 30, 0.3);
+  position: relative;
+  z-index: 3;
+}
+
+/* Wick */
+.candle-wick {
+  width: 2.2px;
+  height: 11px;
+  background: linear-gradient(to top, #221810 0%, #3e2e20 80%, #5a4535 100%);
+  border-radius: 1px;
+  position: relative;
+  z-index: 2;
+  transition: height 0.5s ease, transform 0.5s ease;
+  transform-origin: bottom center;
+}
+
+.candle-wick--out {
+  height: 7px;
+  transform: rotate(8deg);
+  background: #3e3228;
+}
+
+/* Glowing ember tip after being blown out */
+.candle-wick-ember {
+  position: absolute;
+  top: -1px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 3px;
+  height: 3px;
+  background: #ff4d00;
+  border-radius: 50%;
+  box-shadow: 0 0 6px #ff5500, 0 0 10px rgba(255, 120, 40, 0.8);
+  animation: ember-fade 3s ease-out forwards;
+}
+
+@keyframes ember-fade {
+  0%   { opacity: 1; transform: translateX(-50%) scale(1.3); }
+  60%  { opacity: 0.8; transform: translateX(-50%) scale(1); }
+  100% { opacity: 0; transform: translateX(-50%) scale(0.3); }
+}
+
+/* ── Realistic Flame ─────────────────────────────── */
+.candle-flame {
+  position: relative;
+  width: 18px;
+  height: 28px;
+  margin-bottom: -1px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.flame-outer {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 18px;
+  height: 28px;
+  background: radial-gradient(
+    ellipse at 50% 65%,
+    rgba(255, 175, 40, 0.85) 0%,
+    rgba(255, 105, 20, 0.5) 55%,
+    transparent 85%
+  );
+  border-radius: 50% 50% 35% 35% / 60% 60% 38% 38%;
+  animation: flame-dance 1.9s ease-in-out infinite alternate;
+  filter: blur(0.8px);
+}
+
+.flame-inner {
+  position: absolute;
+  bottom: 1px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 12px;
+  height: 22px;
+  background: radial-gradient(
+    ellipse at 50% 70%,
+    #ffffff 0%,
+    #fff3a8 30%,
+    #ffc94d 60%,
+    #ff851b 90%
+  );
+  border-radius: 50% 50% 35% 35% / 60% 60% 38% 38%;
+  animation: flame-flicker 1.7s ease-in-out infinite alternate;
+  box-shadow: 0 0 8px rgba(255, 210, 80, 0.7);
+}
+
+.flame-core {
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 6px;
+  height: 13px;
+  background: #ffffff;
+  border-radius: 50% 50% 40% 40% / 65% 65% 35% 35%;
+  opacity: 0.95;
+  filter: blur(0.3px);
+}
+
+.flame-blue-base {
+  position: absolute;
+  bottom: -1px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 9px;
+  height: 5px;
+  background: radial-gradient(ellipse at 50% 100%, rgba(45, 120, 255, 0.75) 0%, rgba(60, 160, 255, 0.35) 60%, transparent 100%);
+  border-radius: 50%;
+}
+
+.candle-glow {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 205, 90, 0.45) 0%, rgba(255, 140, 50, 0.15) 45%, transparent 70%);
+  animation: glow-breathe 2.4s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes flame-dance {
+  0%   { transform: translateX(-50%) scaleY(1)    skewX(0deg); }
+  25%  { transform: translateX(-48%) scaleY(1.06) skewX(-2.5deg); }
+  50%  { transform: translateX(-51%) scaleY(0.96) skewX(1.5deg); }
+  75%  { transform: translateX(-53%) scaleY(1.04) skewX(2deg); }
+  100% { transform: translateX(-50%) scaleY(0.98) skewX(-1deg); }
+}
+
+@keyframes flame-flicker {
+  0%   { transform: translateX(-50%) scaleY(1); }
+  33%  { transform: translateX(-49%) scaleY(1.04) scaleX(0.96); }
+  66%  { transform: translateX(-51%) scaleY(0.95) scaleX(1.03); }
+  100% { transform: translateX(-50%) scaleY(1.02); }
+}
+
+@keyframes glow-breathe {
+  0%   { opacity: 0.75; transform: translateX(-50%) scale(0.95); }
+  100% { opacity: 1;    transform: translateX(-50%) scale(1.15); }
+}
+
+/* ── Realistic Wispy Smoke Trails ────────────────── */
+.wispy-smoke-wrap {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 24px;
+  height: 70px;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.wispy-smoke-trail {
+  position: absolute;
+  bottom: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(140, 125, 110, 0.5) 0%, rgba(180, 165, 150, 0.25) 50%, transparent 80%);
+  filter: blur(1.5px);
+  will-change: transform, opacity;
+}
+
+.wispy-smoke-1 {
+  left: 45%;
+  width: 8px;
+  height: 8px;
+  animation: wisp-1 2.2s cubic-bezier(0.2, 0.6, 0.35, 1) forwards;
+}
+
+.wispy-smoke-2 {
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  animation: wisp-2 2.5s cubic-bezier(0.25, 0.7, 0.4, 1) 0.15s forwards;
+}
+
+.wispy-smoke-3 {
+  left: 42%;
+  width: 12px;
+  height: 12px;
+  animation: wisp-3 2.8s cubic-bezier(0.3, 0.75, 0.45, 1) 0.35s forwards;
+}
+
+@keyframes wisp-1 {
+  0% {
+    transform: translate(-50%, 0) scale(0.8);
+    opacity: 0.7;
+  }
+  35% {
+    transform: translate(-80%, -24px) scale(2) rotate(15deg);
+    opacity: 0.5;
+  }
+  70% {
+    transform: translate(-30%, -50px) scale(3.5) rotate(-10deg);
+    opacity: 0.25;
+  }
+  100% {
+    transform: translate(-60%, -75px) scale(5) rotate(20deg);
+    opacity: 0;
+  }
+}
+
+@keyframes wisp-2 {
+  0% {
+    transform: translate(-50%, 0) scale(0.6);
+    opacity: 0.65;
+  }
+  40% {
+    transform: translate(-20%, -30px) scale(2.2) rotate(-18deg);
+    opacity: 0.45;
+  }
+  80% {
+    transform: translate(-70%, -60px) scale(4) rotate(14deg);
+    opacity: 0.18;
+  }
+  100% {
+    transform: translate(-40%, -90px) scale(5.8) rotate(-25deg);
+    opacity: 0;
+  }
+}
+
+@keyframes wisp-3 {
+  0% {
+    transform: translate(-50%, 0) scale(0.5);
+    opacity: 0.55;
+  }
+  50% {
+    transform: translate(-65%, -36px) scale(2.8) rotate(22deg);
+    opacity: 0.35;
+  }
+  100% {
+    transform: translate(-10%, -85px) scale(5.5) rotate(-12deg);
+    opacity: 0;
+  }
+}
+
+/* ── Luxury Birthday Cake ───────────────────────── */
+.cake-stand {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.cake-candles-container {
+  display: flex;
+  gap: 1.4rem;
+  align-items: flex-end;
+  justify-content: center;
+  position: relative;
+  z-index: 3;
+  margin-bottom: -12px;
+}
+
+.cake-body-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 224px;
+}
+
+.cake-top-frosting {
+  width: 216px;
+  height: 32px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 50% 35%, #ffffff 0%, #f9f4ed 60%, #eedfd2 100%);
+  border: 1px solid rgba(220, 205, 195, 0.7);
+  box-shadow: inset 0 2px 6px rgba(255, 255, 255, 0.9), 0 4px 10px rgba(160, 130, 110, 0.16);
+  position: relative;
+  z-index: 2;
+  transition: box-shadow 0.8s ease, filter 0.8s ease;
+}
+
+/* Warm candlelight reflection on top of cake */
+.cake-top-glow {
+  position: absolute;
+  inset: 2px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 50% 50%, rgba(255, 215, 120, 0.55) 0%, rgba(255, 180, 80, 0.22) 50%, transparent 80%);
+  pointer-events: none;
+  transition: opacity 0.8s ease;
+}
+
+.cake-piping-pearls {
+  position: absolute;
+  top: 1px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-around;
+  padding: 0 16px;
+  z-index: 2;
+}
+
+.cake-piping-pearl {
+  width: 7px;
+  height: 6px;
+  background: radial-gradient(circle at 35% 35%, #ffffff 0%, #f6efe6 60%, #e0cebe 100%);
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(140, 115, 95, 0.3);
+}
+
+.cake-tier {
+  width: 216px;
+  height: 58px;
+  margin-top: -16px;
+  background: linear-gradient(180deg, #fbf7f1 0%, #f1e6d9 40%, #e6d6c4 80%, #decab6 100%);
+  border-radius: 0 0 20px 20px;
+  position: relative;
+  box-shadow: inset 0 -4px 10px rgba(150, 120, 100, 0.2), 0 10px 24px rgba(70, 55, 45, 0.1);
+  border: 1px solid rgba(215, 200, 185, 0.55);
+  border-top: none;
+  overflow: hidden;
+  z-index: 1;
+}
+
+/* Satin ribbon band */
+.cake-ribbon {
+  position: absolute;
+  bottom: 14px;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: linear-gradient(
+    90deg,
+    rgba(194, 125, 112, 0.3) 0%,
+    rgba(212, 175, 55, 0.7) 50%,
+    rgba(194, 125, 112, 0.3) 100%
+  );
+  box-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+}
+
+/* Delicate scallop bottom drape */
+.cake-ribbon::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.4);
+}
+
+/* Porcelain pedestal plate with gold rim */
+.cake-plate {
+  width: 256px;
+  height: 18px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 50% 40%, #ffffff 0%, #f6f0e8 60%, #e8ddcf 100%);
+  border: 1.5px solid rgba(212, 175, 55, 0.45);
+  box-shadow: 0 16px 36px rgba(50, 40, 30, 0.16), 0 4px 12px rgba(50, 40, 30, 0.08);
+  margin-top: -9px;
+  position: relative;
+  z-index: 0;
+}
+
+/* ── Wish Card Stationery ───────────────────────── */
+.wish-card-stationery {
+  width: 100%;
+  max-width: 320px;
+  background: linear-gradient(180deg, #ffffff 0%, #fcf9f4 100%);
+  border-radius: 20px;
+  padding: 1.1rem 1.25rem 0.95rem;
+  box-shadow:
+    0 12px 32px rgba(60, 45, 35, 0.08),
+    0 2px 6px rgba(60, 45, 35, 0.04),
+    inset 0 0 0 1px rgba(212, 175, 55, 0.28);
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.wish-card-stationery:focus-within {
+  box-shadow:
+    0 16px 40px rgba(194, 125, 112, 0.14),
+    0 0 0 1.5px var(--rose),
+    0 0 20px rgba(194, 125, 112, 0.18);
+  transform: translateY(-2px);
+}
+
+/* ── Particle system ──────────────────────────────── */
+
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: particle-fall var(--duration) ease-out var(--delay) forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes particle-fall {
+  0%   { transform: translate(0, 0) rotate(0deg) scale(1); opacity: 1; }
+  100% { transform: translate(var(--dx), var(--dy)) rotate(var(--rot)) scale(0.3); opacity: 0; }
+}
+
+/* ── Scrollable letter body ─────────────────────── */
+.letter-scroll {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--taupe-light) transparent;
+}
+
+.letter-scroll::-webkit-scrollbar        { width: 4px; }
+.letter-scroll::-webkit-scrollbar-track  { background: transparent; }
+.letter-scroll::-webkit-scrollbar-thumb  { background: var(--taupe-light); border-radius: 2px; }
+
+/* ── Reduced motion ──────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .flame-inner, .flame-outer, .candle-glow { animation: none; }
+  .particle { animation: none; opacity: 0; }
+}
+
+/* ── Gold shimmer animation ────────────────────── */
+@keyframes shimmer-slide {
+  0%   { transform: translateX(-120%) skewX(-12deg); }
+  100% { transform: translateX(220%) skewX(-12deg); }
+}
+
+.card-shimmer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 35%,
+    rgba(255, 230, 160, 0.22) 48%,
+    rgba(255, 255, 255, 0.28) 52%,
+    rgba(255, 230, 160, 0.18) 56%,
+    transparent 65%
+  );
+  animation: shimmer-slide 3.2s ease-in-out infinite;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* ── Noise / grain texture overlay ─────────────── */
+.grain-overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+  opacity: 0.032;
+  pointer-events: none;
+  z-index: 0;
+  border-radius: inherit;
+}
+
+/* ── Glow pulse for mic indicator ───────────────── */
+@keyframes glow-pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 6px var(--rose); }
+  50% { opacity: 0.5; box-shadow: 0 0 12px var(--rose); }
+}
+
